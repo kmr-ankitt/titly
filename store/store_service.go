@@ -47,7 +47,10 @@ func SaveUrlMapping(shortUrl string, longUrl string, userId string) {
 
 func RetriveInitialUrl(shortUrl string) string {
 	res, err := storeService.redisClient.Get(ctx, shortUrl).Result()
-	if err != nil {
+	if err == redis.Nil {
+		fmt.Printf("No URL found for shortUrl: %s\n", shortUrl)
+		return ""
+	} else if err != nil {
 		panic(fmt.Sprintf("Failed retrieving key url | Error: %v - shortUrl: %s\n", err, shortUrl))
 	}
 	return res
