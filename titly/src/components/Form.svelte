@@ -16,7 +16,7 @@
 			}
 		},
 		{
-			message: 'Invalid URL format. Ensure it is a valid URL starting with http:// or https://'
+			message: 'Ensure it is a valid URL starting with http:// or https://'
 		}
 	);
 
@@ -41,7 +41,7 @@
 </script>
 
 <div
-	class="relative w-full max-w-3xl mx-auto mt-10 aspect-video bg-white border border-gray-300 rounded-xl shadow-lg sm:aspect-auto sm:mt-6 sm:p-5 sm:max-w-3xl"
+	class="relative w-full max-w-3xl mx-auto mt-10 aspect-video min-h-1/3 sm:min-h-auto bg-white border border-gray-300 rounded-xl shadow-lg sm:aspect-auto sm:mt-6 sm:p-5 sm:max-w-3xl"
 >
 	<form
 		onsubmit={handleSubmit}
