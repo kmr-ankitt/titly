@@ -1,21 +1,38 @@
 <script lang="ts">
-	import { z, ZodError } from "zod";
+	import { sendUrl } from '$lib/api';
+	import { z, ZodError } from 'zod';
+	import Output from './Output.svelte';
 
-	let url = '';
-	let error = '';
+	let url = $state('');
+	let error = $state('');
 
-	const urlSchema = z.string().url();
+	const urlSchema = z.string().refine(
+		(val) => {
+			try {
+				new URL(val);
+				return true;
+			} catch {
+				return false;
+			}
+		},
+		{
+			message: 'Invalid URL format. Ensure it is a valid URL starting with http:// or https://'
+		}
+	);
 
-	const handleSubmit = (event: Event) => {
+	let shortUrl = $state('');
+
+	const handleSubmit = async (event: Event) => {
 		event.preventDefault();
 
 		try {
 			urlSchema.parse(url);
 			error = '';
-			console.log()
+			const { short_url } = await sendUrl(url);
+			shortUrl = short_url;
 		} catch (e) {
 			if (e instanceof ZodError) {
-				error = e.errors[0]?.message || 'Invalid URL';
+				error = e.errors[0]?.message || 'URL must start with http:// or https://';
 			} else {
 				error = 'Unknown error';
 			}
@@ -23,9 +40,11 @@
 	};
 </script>
 
-<div class="relative w-full max-w-3xl mx-auto mt-10 aspect-video bg-white border border-gray-300 rounded-xl shadow-lg sm:aspect-auto sm:mt-6 sm:p-5  sm:max-w-3xl ">
+<div
+	class="relative w-full max-w-3xl mx-auto mt-10 aspect-video bg-white border border-gray-300 rounded-xl shadow-lg sm:aspect-auto sm:mt-6 sm:p-5 sm:max-w-3xl"
+>
 	<form
-		on:submit={handleSubmit}
+		onsubmit={handleSubmit}
 		class="absolute inset-0 flex flex-col justify-center gap-4 p-6 bg-gray-50 rounded-xl sm:static sm:p-4"
 	>
 		<label for="url" class="font-bold text-lg text-gray-700 sm:text-base">URL:</label>
@@ -47,4 +66,5 @@
 			Submit
 		</button>
 	</form>
+	<Output {shortUrl} />
 </div>
