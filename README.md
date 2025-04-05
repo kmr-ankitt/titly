@@ -55,3 +55,7 @@ Titly is a blazingly fast URL shortner written in go.
   ```
 
   4. Open your browser and go to `http://localhost:5173` to view the application.
+
+
+![image](https://github.com/user-attachments/assets/197a892f-9376-4958-896e-f6e7e5b416b9)
+
