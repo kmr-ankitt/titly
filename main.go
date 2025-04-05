@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"github.com/kmr-ankitt/titly/handler"
 	"github.com/kmr-ankitt/titly/store"
@@ -10,6 +11,8 @@ import (
 
 func main()  {
 	router := gin.Default()
+	router.Use(cors.Default())
+	
 	router.GET("/", func(ctx * gin.Context){
 		ctx.JSON(200, gin.H{
 			"message": "Welcome to Titly!",
