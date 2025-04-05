@@ -30,8 +30,8 @@ func base58Encoded(bytes []byte) string {
 
 // The userId is included to ensure that different users receive unique shortened URLs
 // even if they attempt to shorten the same link.
-func GenerateShortURL(initialLink string, userId string) string {
-	urlHashBytes := sha2560f(initialLink + userId)
+func GenerateShortURL(initialLink string) string {
+	urlHashBytes := sha2560f(initialLink)
 	generateNumber := new(big.Int).SetBytes(urlHashBytes).Uint64()
 	finalString := base58Encoded([]byte(fmt.Appendf(nil, "%d", generateNumber)))
 	return finalString[:8]

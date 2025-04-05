@@ -10,7 +10,6 @@ import (
 
 type UrlCreationRequest struct {
 	LongUrl string `json:"long_url" binding:"required"`
-	UserId string `json:"user_id" binding:"required"`
 }
 
 func CreateShortUrl(ctx * gin.Context){
@@ -20,8 +19,8 @@ func CreateShortUrl(ctx * gin.Context){
 		return
 	}
 	
-	shortUrl := shortner.GenerateShortURL(creationRequest.LongUrl, creationRequest.UserId)
-	store.SaveUrlMapping(shortUrl, creationRequest.LongUrl, creationRequest.UserId)
+	shortUrl := shortner.GenerateShortURL(creationRequest.LongUrl)
+	store.SaveUrlMapping(shortUrl, creationRequest.LongUrl)
 	
 	host := "http://localhost:4000/"
 	ctx.JSON(200, gin.H{
