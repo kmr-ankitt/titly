@@ -20,7 +20,7 @@ func CreateShortUrl(ctx * gin.Context){
 	}
 	
 	shortUrl := shortner.GenerateShortURL(creationRequest.LongUrl)
-	store.SaveUrlMapping(shortUrl, creationRequest.LongUrl)
+	go store.SaveUrlMapping(shortUrl, creationRequest.LongUrl)
 	
 	host := "http://localhost:4000/"
 	ctx.JSON(200, gin.H{
