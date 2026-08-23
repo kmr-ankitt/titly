@@ -107,4 +107,5 @@ docker compose up --build
 **Server Port:** `4000`
 **Redis Port:** `6379`
 
+![image](titly-arch.png)
 ![image](https://github.com/user-attachments/assets/197a892f-9376-4958-896e-f6e7e5b416b9)
