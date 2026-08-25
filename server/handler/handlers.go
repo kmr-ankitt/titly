@@ -28,9 +28,24 @@ func CreateShortUrl(ctx *gin.Context, db *store.StoreService) {
 	}
 
 	shortUrl := generator.GenerateShortURL(longUrl)
-	// store.StoreMappingInSqliteStore(db.SqliteClient, longUrl, shortUrl)
+	id := store.StoreMappingInSqliteStore(db.SqliteClient, longUrl, shortUrl)
 
-	ctx.JSON(200, gin.H{"short_url": shortUrl})
+	ctx.JSON(200, gin.H{
+		"id":        id,
+		"long_url":  longUrl,
+		"short_url": shortUrl,
+	})
+}
+
+//TODO: Just for testing purpose
+func ShowAllMappings(ctx *gin.Context, db * store.StoreService) {
+	mappings, err := store.GetAllMappingsFromSqliteStore(db.SqliteClient)
+	if err != nil {
+		ctx.JSON(500, gin.H{"error": err.Error()})
+		return
+	}
+
+	ctx.JSON(200, mappings)
 }
 
 func HandleShortUrlRedirect(ctx *gin.Context) {

@@ -30,7 +30,11 @@ func main()  {
 	router.GET("/:short-url", func(ctx * gin.Context){
 		handler.HandleShortUrlRedirect(ctx)
 	})
-	
+
+	//TODO: Just for testing purpose
+	router.GET("/test/all", func(ctx *gin.Context) {
+		handler.ShowAllMappings(ctx, db)
+	})
 
 	err := router.Run(":4000")	
 	if err != nil {
