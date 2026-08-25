@@ -1,11 +1,10 @@
 module github.com/kmr-ankitt/titly
 
-go 1.24.1
+go 1.27
 
 require (
 	github.com/gin-contrib/cors v1.7.5
 	github.com/gin-gonic/gin v1.10.0
-	github.com/itchyny/base58-go v0.2.2
 	github.com/mattn/go-sqlite3 v1.14.50
 	github.com/redis/go-redis/v9 v9.22.0
 )
