@@ -15,7 +15,6 @@ func main()  {
 	router.Use(cors.Default())
 
 	db := store.InitialiseStore()
-	store.TestRedisConnection(context.Background(), db.RedisClient)
 	
 	router.GET("/", func(ctx * gin.Context){
 		ctx.JSON(200, gin.H{

@@ -2,7 +2,6 @@ package store
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/redis/go-redis/v9"
 )
@@ -17,20 +16,6 @@ func InitaliseRedisStore() *redis.Client{
 	})
 
 	return rdb
-}
-
-func TestRedisConnection(ctx context.Context, rdb *redis.Client) {
-	err := rdb.Set(ctx, "foo", "bar", 0).Err()
-	if err != nil {
-		panic(err)
-	}
-
-	val, err := rdb.Get(ctx, "foo").Result()
-	if err != nil {
-		panic(err)
-	}
-	fmt.Println("foo", val) // >>> foo bar
-
 }
 
 func GetLongUrlFromRedisStore(ctx context.Context, rdb *redis.Client, shortUrl string) (string, error) {
