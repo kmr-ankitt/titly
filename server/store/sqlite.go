@@ -93,37 +93,3 @@ func GetLongUrlFromSqliteStore(ctx context.Context, db *sql.DB, shortUrl string)
 
 	return longUrl, nil
 }
-
-// TODO: Just for testing
-func GetAllMappingsFromSqliteStore(db *sql.DB) ([]UrlMapping, error) {
-	query := "SELECT id, long_url, short_url, created_at FROM url_mappings;"
-	rows, err := db.Query(query)
-	if err != nil {
-		return nil, err
-	}
-	defer rows.Close()
-
-	var mappings []UrlMapping
-
-	for rows.Next() {
-		var id int64
-		var longUrl, shortUrl string
-		var createdAt string
-
-		err := rows.Scan(&id, &longUrl, &shortUrl, &createdAt)
-		if err != nil {
-			return nil, err
-		}
-
-		mapping := UrlMapping{
-			ID:        id,
-			LongUrl:   longUrl,
-			ShortUrl:  shortUrl,
-			CreatedAt: createdAt,
-		}
-
-		mappings = append(mappings, mapping)
-	}
-
-	return mappings, nil
-}

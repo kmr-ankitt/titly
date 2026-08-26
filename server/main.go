@@ -1,7 +1,6 @@
 package main
 
 import (
-	"context"
 	"fmt"
 
 	"github.com/gin-contrib/cors"
@@ -28,26 +27,6 @@ func main()  {
 	
 	router.GET("/:short-url", func(ctx * gin.Context){
 		handler.HandleShortUrlRedirect(ctx, db)
-	})
-
-	//TODO: Just for testing
-	router.GET("/test/sqlite", func(ctx * gin.Context){
-		mappings, err := store.GetAllMappingsFromSqliteStore(db.SqliteClient)
-		if err != nil {
-			ctx.JSON(500, gin.H{"error": "Failed to retrieve mappings"})
-			return
-		}
-		ctx.JSON(200, gin.H{"mappings": mappings})
-	})
-
-	//TODO: Just for testing
-	router.GET("/test/redis", func(ctx * gin.Context){
-		mappings, err := store.GetAllMappingsFromRedisStore(context.Background(), db.RedisClient)
-		if err != nil {
-			ctx.JSON(500, gin.H{"error": "Failed to retrieve mappings"})
-			return
-		}
-		ctx.JSON(200, gin.H{"mappings": mappings})
 	})
 
 	err := router.Run(":4000")	

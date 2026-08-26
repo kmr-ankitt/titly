@@ -38,22 +38,3 @@ func PutUrlMappingInRedisStore(ctx context.Context, rdb *redis.Client, shortUrl 
 
 	return nil
 }
-
-//TODO: Just for testing
-func GetAllMappingsFromRedisStore(ctx context.Context, rdb *redis.Client) (map[string]string, error) {
-	keys, err := rdb.Keys(ctx, "*").Result()
-	if err != nil {
-		return nil, err
-	}
-
-	mappings := make(map[string]string)
-	for _, key := range keys {
-		longUrl, err := rdb.Get(ctx, key).Result()
-		if err != nil {
-			return nil, err
-		}
-		mappings[key] = longUrl
-	}
-
-	return mappings, nil
-}
