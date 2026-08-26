@@ -2,6 +2,7 @@ package store
 
 import (
 	"context"
+	"time"
 
 	"github.com/redis/go-redis/v9"
 )
@@ -30,7 +31,7 @@ func GetLongUrlFromRedisStore(ctx context.Context, rdb *redis.Client, shortUrl s
 }
 
 func PutUrlMappingInRedisStore(ctx context.Context, rdb *redis.Client, shortUrl string, longUrl string) error {
-	err := rdb.Set(ctx, shortUrl, longUrl, 604800).Err()
+	err := rdb.Set(ctx, shortUrl, longUrl, 24*time.Hour).Err()
 	if err != nil {
 		return err
 	}
