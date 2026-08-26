@@ -1,6 +1,8 @@
 package handler
 
 import (
+	"net/http"
+
 	"github.com/gin-gonic/gin"
 	"github.com/kmr-ankitt/titly/generator"
 	"github.com/kmr-ankitt/titly/store"
@@ -37,16 +39,35 @@ func CreateShortUrl(ctx *gin.Context, db *store.StoreService) {
 	})
 }
 
-//TODO: Just for testing purpose
-func ShowAllMappings(ctx *gin.Context, db * store.StoreService) {
-	mappings, err := store.GetAllMappingsFromSqliteStore(db.SqliteClient)
-	if err != nil {
-		ctx.JSON(500, gin.H{"error": err.Error()})
+/*
+If a user hits a short URL, we will be checking if it exists in cache,
+then in database, if it exists in database, then we will redirect the user to the long URL
+and also store mapping in cache for future requests.
+*/
+func HandleShortUrlRedirect(ctx *gin.Context, db *store.StoreService) {
+	shortUrl := ctx.Param("short-url")
+
+	var longUrl string
+	// check if the short URL exists in cache
+	longUrl, err := store.GetLongUrlFromRedisStore(ctx, db.RedisClient, shortUrl)
+	if err == nil {
+		ctx.Redirect(http.StatusFound, longUrl)
 		return
 	}
 
-	ctx.JSON(200, mappings)
-}
+	// check if the short URL exists in Database
+	longUrl, err = store.GetLongUrlFromSqliteStore(ctx, db.SqliteClient, shortUrl)
+	if err != nil {
+		ctx.JSON(404, gin.H{"error": "Short URL not found"})
+		return
+	}
 
-func HandleShortUrlRedirect(ctx *gin.Context) {
+	// store mapping in cache for future requests
+	err = store.PutUrlMappingInRedisStore(ctx, db.RedisClient, shortUrl, longUrl)
+	if err != nil {
+		ctx.JSON(500, gin.H{"error": "Failed to store mapping in cache"})
+		return
+	}
+
+	ctx.Redirect(http.StatusFound, longUrl)
 }
