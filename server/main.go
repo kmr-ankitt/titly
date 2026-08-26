@@ -12,6 +12,8 @@ import (
 func main()  {
 	router := gin.Default()
 	router.Use(cors.Default())
+
+	db := store.InitialiseStore()
 	
 	router.GET("/", func(ctx * gin.Context){
 		ctx.JSON(200, gin.H{
@@ -20,16 +22,14 @@ func main()  {
 	})
 	
 	router.POST("/create-short-url", func(ctx * gin.Context){
-		handler.CreateShortUrl(ctx)
+		handler.CreateShortUrl(ctx, db)
 	})
 	
 	router.GET("/:short-url", func(ctx * gin.Context){
-		handler.HandleShortUrlRedirect(ctx)
+		handler.HandleShortUrlRedirect(ctx, db)
 	})
-	
-	store.InitaliseStore()
-	
-	err := router.Run(":4000")
+
+	err := router.Run(":4000")	
 	if err != nil {
 		fmt.Println("Error starting server:", err)
 	}
