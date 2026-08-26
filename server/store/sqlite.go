@@ -1,6 +1,7 @@
 package store
 
 import (
+	"context"
 	"database/sql"
 
 	_ "github.com/mattn/go-sqlite3"
@@ -81,6 +82,19 @@ func StoreMappingInSqliteStore(db *sql.DB, longUrl string, shortUrl string) int6
 	return lastInsertId
 }
 
+func GetLongUrlFromSqliteStore(ctx context.Context, db *sql.DB, shortUrl string) (string, error) {
+	var longUrl string
+	query := "SELECT long_url FROM url_mappings WHERE short_url = ?;"
+
+	err := db.QueryRowContext(ctx, query, shortUrl).Scan(&longUrl)
+	if err != nil {
+		return "", err
+	}
+
+	return longUrl, nil
+}
+
+// TODO: Just for testing
 func GetAllMappingsFromSqliteStore(db *sql.DB) ([]UrlMapping, error) {
 	query := "SELECT id, long_url, short_url, created_at FROM url_mappings;"
 	rows, err := db.Query(query)
