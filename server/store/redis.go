@@ -2,15 +2,22 @@ package store
 
 import (
 	"context"
+	"os"
 	"time"
 
 	"github.com/redis/go-redis/v9"
 )
 
+var redisURL = func() string {
+	if url := os.Getenv("REDIS_URL"); url != "" {
+		return url
+	}
+	return "localhost:6379"
+}()
 
-func InitaliseRedisStore() *redis.Client{
+func InitaliseRedisStore() *redis.Client {
 	rdb := redis.NewClient(&redis.Options{
-		Addr:     "localhost:6379",
+		Addr:     redisURL,
 		Password: "", // no password
 		DB:       0,  // use default DB
 		Protocol: 2,

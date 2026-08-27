@@ -1,17 +1,15 @@
-FROM node:lts-alpine
+FROM node:22-alpine
 
 WORKDIR /app
 
 RUN npm install -g pnpm
 
-COPY package.json pnpm-lock.yaml ./
-
-RUN pnpm install
-
 COPY . .
+
+RUN pnpm install --frozen-lockfile
 
 RUN pnpm build
 
-EXPOSE 4173
+EXPOSE 5173
 
-CMD ["pnpm", "preview", "--host"]
+CMD ["pnpm", "preview", "--host", "0.0.0.0"]
