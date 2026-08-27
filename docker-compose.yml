@@ -22,6 +22,9 @@ services:
       - redis
     environment:
       REDIS_URL: redis:6379
+      SQLITE_DB_PATH: /app/data/titly.db
+    volumes:
+      - sqlite_data:/app/data
     networks:
       - app-network
 
@@ -41,4 +44,6 @@ networks:
 
 volumes:
   redis_data:
+    driver: local
+  sqlite_data:
     driver: local
