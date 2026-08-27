@@ -2,6 +2,7 @@
 	import { sendUrl } from '$lib/api';
 	import { z, ZodError } from 'zod';
 	import Output from './Output.svelte';
+	import { page } from '$app/state';
 
 	let url = $state('');
 	let error = $state('');
@@ -20,7 +21,8 @@
 		}
 	);
 
-	let shortUrl = $state('');
+	let new_url = $state('');
+	let current_url = page.url.href;
 
 	const handleSubmit = async (event: Event) => {
 		event.preventDefault();
@@ -28,8 +30,9 @@
 		try {
 			urlSchema.parse(url);
 			error = '';
-			const { short_url } = await sendUrl(url);
-			shortUrl = short_url;
+			const res = await sendUrl(url);
+			let shortUrl = res?.short_url ?? '';
+			new_url = current_url + shortUrl;
 		} catch (e) {
 			if (e instanceof ZodError) {
 				error = e.errors[0]?.message || 'URL must start with http:// or https://';
@@ -66,5 +69,5 @@
 			Submit
 		</button>
 	</form>
-	<Output {shortUrl} />
+	<Output {new_url} />
 </div>
