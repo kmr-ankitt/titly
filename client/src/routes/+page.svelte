@@ -1,20 +1,65 @@
-<script>
+<script lang="ts">
 	import Form from '../components/Form.svelte';
+	import Output from '../components/Output.svelte';
+	import History from '../components/History.svelte';
+	import { addHistoryItem } from '$lib/history';
+
+	let currentFullShortUrl = $state('');
+	let currentShortCode = $state('');
+	let currentOriginalUrl = $state('');
+
+	let historyRef: { refresh: () => void } | undefined = $state(undefined);
+
+	const handleShortenSuccess = (shortCode: string, fullUrl: string, originalUrl: string) => {
+		currentShortCode = shortCode;
+		currentFullShortUrl = fullUrl;
+		currentOriginalUrl = originalUrl;
+
+		// Save to local history
+		addHistoryItem({
+			shortUrl: shortCode,
+			fullShortUrl: fullUrl,
+			longUrl: originalUrl
+		});
+
+		// Refresh history component
+		if (historyRef && typeof historyRef.refresh === 'function') {
+			historyRef.refresh();
+		}
+	};
 </script>
 
-<div class="absolute top-0 -z-10 h-full w-full bg-white">
-	<div
-		class="absolute bottom-auto left-auto right-0 top-0 h-[500px] w-[500px] -translate-x-[30%] translate-y-[20%] rounded-full bg-[rgba(255,165,0,0.5)] opacity-50 blur-[80px]"
-	></div>
-	<div
-		class="absolute bottom-0 left-auto right-auto top-auto h-[400px] w-[400px] translate-x-[10%] -translate-y-[10%] rounded-full bg-[rgba(0,128,255,0.5)] opacity-50 blur-[60px]"
-	></div>
-	<div
-		class="absolute bottom-auto left-0 right-auto top-auto h-[300px] w-[300px] -translate-x-[20%] translate-y-[30%] rounded-full bg-[rgba(128,0,255,0.5)] opacity-50 blur-[50px]"
-	></div>
-</div>
-<section class="h-screen w-full flex flex-col items-center justify-center text-zinc-900 gap-5 p-4">
-	<h1 class="text-4xl font-extrabold">Welcome to <span class="text-yellow-500">Titly</span></h1>
-	<p class="text-lg">Blazing fast URL Shortner</p>
-	<Form />
+<section class="flex flex-col items-center gap-10 py-6 sm:py-12">
+	<!-- Hero Section -->
+	<div class="text-center max-w-2xl flex flex-col items-center gap-4">
+		<div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-500/10 border border-amber-500/20 text-amber-400 text-xs font-bold tracking-wide uppercase">
+			<span class="w-1.5 h-1.5 rounded-full bg-amber-400"></span>
+			Fast, Reliable & Modern
+		</div>
+
+		<h1 class="text-4xl sm:text-6xl font-black tracking-tight text-white leading-tight">
+			Shorten Links with <span class="text-transparent bg-clip-text bg-gradient-to-r from-amber-400 via-orange-400 to-amber-500">Instant Speed</span>
+		</h1>
+
+		<p class="text-base sm:text-lg text-slate-400 font-normal leading-relaxed">
+			Transform long, cluttered URLs into clean, memorable links with real-time redirection and solid reliability.
+		</p>
+	</div>
+
+	<!-- Form Card -->
+	<div class="w-full max-w-3xl flex flex-col gap-6">
+		<Form onShortenSuccess={handleShortenSuccess} />
+
+		<!-- Shortened Link Result Card -->
+		{#if currentFullShortUrl}
+			<Output
+				fullShortUrl={currentFullShortUrl}
+				shortCode={currentShortCode}
+				originalUrl={currentOriginalUrl}
+			/>
+		{/if}
+
+		<!-- Recent Links History -->
+		<History bind:this={historyRef} />
+	</div>
 </section>
