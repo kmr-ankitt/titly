@@ -1,38 +1,56 @@
-# sv
+# Titly Client
 
-Everything you need to build a Svelte project, powered by [`sv`](https://github.com/sveltejs/cli).
+Frontend for the Titly URL shortener, built with Svelte 5, SvelteKit, and Tailwind CSS.
 
-## Creating a project
+## Features
 
-If you're seeing this, you've probably already done this step. Congrats!
+- **Shortener Form**: URL validation with Zod, protocol auto-fixing, and error feedback for failed server requests.
+- **Dynamic Routing (`/[url]`)**: Resolves `http://localhost:5173/:shortCode` against backend redirect endpoints with fallback 404 screens.
+- **API Status**: Live backend server health badge in the navbar.
+- **Link History**: Saves recent shortened URLs in `localStorage`.
+- **Copy & QR Code**: Copy links to clipboard with toast notifications and generate QR codes.
 
-```bash
-# create a new project in the current directory
-npx sv create
+## Project Structure
 
-# create a new project in my-app
-npx sv create my-app
+```text
+src/
+├── components/
+│   ├── Form.svelte
+│   ├── Output.svelte
+│   ├── History.svelte
+│   ├── Navbar.svelte
+│   └── Toast.svelte
+├── lib/
+│   ├── api.ts
+│   ├── history.ts
+│   └── toastStore.ts
+└── routes/
+    ├── +layout.svelte
+    ├── +page.svelte
+    ├── +error.svelte
+    └── [url]/
+        ├── +page.ts
+        └── +page.svelte
 ```
 
-## Developing
-
-Once you've created a project and installed dependencies with `npm install` (or `pnpm install` or `yarn`), start a development server:
+## Development & Build
 
 ```bash
-npm run dev
+# Install dependencies
+pnpm install
 
-# or start the server and open the app in a new browser tab
-npm run dev -- --open
+# Development server (http://localhost:5173)
+pnpm dev
+
+# Type check
+pnpm check
+
+# Production build
+pnpm build
 ```
 
-## Building
+## Environment Variables
 
-To create a production version of your app:
-
-```bash
-npm run build
-```
-
-You can preview the production build with `npm run preview`.
-
-> To deploy your app, you may need to install an [adapter](https://svelte.dev/docs/kit/adapters) for your target environment.
+| Variable | Default | Description |
+| --- | --- | --- |
+| `VITE_API_URL` | `http://localhost:4000` | Titly backend API base URL |
