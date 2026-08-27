@@ -3,7 +3,7 @@ services:
     build:
       context: ./client
       dockerfile: Dockerfile
-    container_name: titly-client 
+    container_name: titly-client
     ports:
       - "4173:4173"
     depends_on:
@@ -21,18 +21,24 @@ services:
     depends_on:
       - redis
     environment:
-      - REDIS_URL=redis:6379
+      REDIS_URL: redis:6379
     networks:
       - app-network
 
   redis:
-    image: "redis:latest"
-    container_name: my-redis-db
+    image: redis:7-alpine
+    container_name: titly-redis-db
     ports:
       - "6379:6379"
+    volumes:
+      - redis_data:/data
     networks:
       - app-network
 
 networks:
   app-network:
     driver: bridge
+
+volumes:
+  redis_data:
+    driver: local
